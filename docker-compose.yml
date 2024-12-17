@@ -1,28 +1,28 @@
 ## Penser à changers les informations indiquées avec les chevrons (les TODO vous indiquerons où)
 services:
   # TODO
-  <nom-conteneur-front>:
+  tripwizu-react:
     build : 
       context : ./front
       
     # Ci-dessous la redirection du port à décommenter pour les tests en local
-    # ports:
-    #   - "8080:8080"
+    ports:
+      - "8080:8080"
 
     # links permet d'indiquer que les conteneurs peuvent communiquer sur un réseau interne au moteur Docker
     # ici, le conteneur du "front" doit pouvoir échanger avec le conteneur du "back"
     links:
       # TODO
-      - <nom-conteneur-api>
+      - tripwizu-api
 
   # TODO
-  <nom-conteneur-api>:
+  tripwizu-api:
     build : 
-      context : ./server
+      context : ./back
 
     # Ci-dessous la redirection du port à décommenter pour les tests en local
-    # ports:
-      # - "8000:8000"
+    ports:
+      - "8000:8000"
 
     # "depends_on" permet d'indiquer que le conteneur api doit attendre le lancement du conteneur "PostgreSQL" avant de démarrer
     depends_on:
@@ -30,25 +30,25 @@ services:
         condition: service_healthy
     environment:
       # TODO
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://<nom-conteneur-bdd>:5432/<nom-bdd>
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://tripwizu-db:5432/${POSTGRES_DATABASE}
       # TODO
-      - SPRING_DATASOURCE_USERNAME=<nom-utilisateur-bdd>
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
       # TODO
-      - SPRING_DATASOURCE_PASSWORD=<mot-de-passe-BDD>
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
       # TODO : DDL auto ou pas ?
       - SPRING_JPA_HIBERNATE_DDL_AUTO=none
 
   PostgreSQL:
     image: postgres:15
     # TODO
-    container_name: <nom-conteneur-bdd>
+    container_name: tripwizu-db
     environment:
       # TODO
-      - POSTGRES_USER=<mot-de-passe-root-bdd>
+      - POSTGRES_USER=${POSTGRES_USER}
       # TODO
-      - POSTGRES_PASSWORD=<mot-de-passe-root-bdd>
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       # TODO
-      - POSTGRES_DB=<nom-bdd>
+      - POSTGRES_DB=${POSTGRES_DATABASE}
     logging: # option de paramétrage des logs
       options:
         max-size: 10m # fichier de 10 Mo maximum
@@ -60,8 +60,8 @@ services:
       retries: 5
     # on ne redirige pas le port 5432 par sécurité, la base de données est ainsi inaccessible ailleurs que entre les conteneurs
     # Décommenter ces lignes pour pouvoir rediriger et ainsi pouvoir facilement tester en local
-    # ports:
-    #   - '5432:5432'
+    ports:
+      - '5432:5432'
     volumes:
       # TODO ajout des volumes pour création automatique de la base de données à la création du conteneur
       # Attention, un dossier "db" doit être créé et contenir les scripts de création
@@ -81,5 +81,5 @@ services:
       # ajout du chemin vers les certificats
       - ./nginx:/etc/nginx/conf.d/ 
     depends_on:
-      - <nom-conteneur-front>
-      - <nom-conteneur-api>
+      - tripwizu-react
+      - tripwizu-api

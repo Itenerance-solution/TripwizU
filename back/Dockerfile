@@ -3,9 +3,9 @@
 # 2. le déploiement du projet dans un conteneur "eclipse temurin"
 
 # Etape 1 : compilation du projet
-FROM maven:3.9.3-eclipse-temurin-17-alpine as builder
+FROM maven:eclipse-temurin as builder
 # paramétrage du dossier de travail
-WORKDIR /opt/epnak-api
+WORKDIR /opt/tripwizu-api
 # copie uniquement du pom.xml dans le conteneur
 COPY pom.xml .
 # copie du code source
@@ -15,8 +15,8 @@ RUN mvn clean install -DskipTests
 
 # Etape 2 : conteneur en production
 # utilisation d'une image recommandée pour sa légèreté
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:21-jre-alpine
 EXPOSE 8000/tcp
-WORKDIR /opt/<nom-projet>
-COPY --from=builder /opt/<nom-projet>/target/<nom-projet>-0.0.1-SNAPSHOT.jar <nom-projet>-0.0.1-SNAPSHOT.jar
-ENTRYPOINT ["java","-jar","/opt/<nom-projet>/<nom-projet>-0.0.1-SNAPSHOT.jar"]
+WORKDIR /opt/tripwizu-api
+COPY --from=builder /opt/tripwizu-api/target/tripwizu-0.0.1-SNAPSHOT.jar tripwizu-0.0.1-SNAPSHOT.jar
+ENTRYPOINT ["java","-jar","/opt/tripwizu-api/tripwizu-0.0.1-SNAPSHOT.jar"]
