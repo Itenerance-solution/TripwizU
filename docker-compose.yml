@@ -36,7 +36,8 @@ services:
       # TODO
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
       # TODO : DDL auto ou pas ?
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=none
+      - SPRING_PROFILES_ACTIVE=dev
+
 
   PostgreSQL:
     image: postgres:15
