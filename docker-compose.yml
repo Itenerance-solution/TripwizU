@@ -61,7 +61,7 @@ services:
     # on ne redirige pas le port 5432 par sécurité, la base de données est ainsi inaccessible ailleurs que entre les conteneurs
     # Décommenter ces lignes pour pouvoir rediriger et ainsi pouvoir facilement tester en local
     ports:
-      - '5432:5432'
+      - '5433:5432'
     volumes:
       # TODO ajout des volumes pour création automatique de la base de données à la création du conteneur
       # Attention, un dossier "db" doit être créé et contenir les scripts de création
@@ -73,7 +73,7 @@ services:
     image: nginx:alpine
     restart: always
     ports:
-      - "8080:80"
+      - "8070:80"
       - "443:443" # exposition du port 443 (sécurisé)
     volumes:
       # ajout du fichier de configuration du nginx pour en faire un "reverse proxy"
